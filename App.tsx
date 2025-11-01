@@ -15,7 +15,10 @@ import {
   measureFirst,
   measureSecond,
   getSingleQubitAnglesFromTwo,
-  runSequence
+  runSequence,
+  threeQubit,
+  teleport,
+  getSingleQubitAnglesFromThree
 } from './src/qubit';
 
 const QubitVisualizer = ({ theta, phi }) => {
@@ -50,10 +53,10 @@ const QubitVisualizer = ({ theta, phi }) => {
           }}
         />
       </View>
-      <View>
+      {/* <View>
         <Text>x: {x}</Text>
         <Text>y: {y}</Text>
-      </View>
+      </View> */}
     </View>
   )
 }
@@ -69,6 +72,19 @@ const TwoQubitVisualizer = ({state})=> {
   )
 }
 
+const ThreeQubitVisualizer = ({state})=> {
+  const qubitA = getSingleQubitAnglesFromThree(state, 0)
+  const qubitB = getSingleQubitAnglesFromThree(state, 1)
+  const qubitC = getSingleQubitAnglesFromThree(state, 2)
+  return (
+    <View style={{flexDirection:"row", justifyContent:"space-around", marginTop:20}}>
+      <QubitVisualizer theta={qubitA.theta} phi={qubitA.phi} />
+      <QubitVisualizer theta={qubitB.theta} phi={qubitB.phi} />
+      <QubitVisualizer theta={qubitC.theta} phi={qubitC.phi} />
+    </View>
+  )
+}
+
 function App() {
   const [currentQubit, setCurrentQubit] = useState({ ...qubit });
   // const [angle, setAngle] = useState(0);
@@ -76,10 +92,15 @@ function App() {
 
   const [sequence, setSequence] = useState([])
 
-  const [state, setState] = useState({ ...twoQubit })
+  // const [state, setState] = useState({ ...twoQubit })
+  const [state, setState] = useState({ ...threeQubit })
+  // const [result, setResult] = useState({
+  //   first: null,
+  //   second: null
+  // });
   const [result, setResult] = useState({
-    first: null,
-    second: null
+    a: null,
+    b: null
   });
 
   // const p0 = magnitudeSquared(currentQubit.alpha);
@@ -117,9 +138,14 @@ function App() {
         <Text>β = {currentQubit.beta.re.toFixed(2)} + {currentQubit.beta.im.toFixed(2)}i</Text>
       </View> */}
 
-      <View style={{ marginVertical: 10 }}>
+      {/* <View style={{ marginVertical: 10 }}>
         <Text style={{ fontSize: 16, marginBottom: 8 }}>sequence</Text>
         <Text>{sequence?.map(s=>s.type).join(",")}</Text>
+      </View> */}
+
+       <View style={{ marginVertical: 10 }}>
+        <Text>Measurement A: {result.a}</Text>
+        <Text>Measurement B: {result.b}</Text>
       </View>
 
       {/* <View style={{ marginVertical: 10 }}>
@@ -147,7 +173,8 @@ function App() {
 
 
         {/* <QubitVisualizer theta={theta} phi={phi} /> */}
-        <TwoQubitVisualizer state={state} />
+        {/* <TwoQubitVisualizer state={state} /> */}
+        <ThreeQubitVisualizer state={state} />
 
         {/* <Button title="Rotate 0°" onPress={() => applyRotation(0)} /> */}
         {/* <Button title="Rotate 45°" onPress={() => applyRotation(45)} /> */}
@@ -237,28 +264,36 @@ function App() {
           }}
         /> */}
 
-        <Button
+        {/* <Button
           title="Add Hadamard to Q0"
           onPress={() => {
             setSequence([...sequence, {type: "H", target:0}])
           }}
-        />
-        <Button
+        /> */}
+        {/* <Button
           title="Add CNOT Q0->Q1"
           onPress={() => {
             setSequence([...sequence, {type: "CNOT", control: 0, target:1}])
           }}
-        />
-         <Button
+        /> */}
+         {/* <Button
           title="Run Sequence"
           onPress={() => {
             setState(runSequence(state, sequence))
           }}
-        />
-         <Button
+        /> */}
+         {/* <Button
           title="Clear Sequence"
           onPress={() => {
             setSequence([])
+          }}
+        /> */}
+          <Button
+          title="Teleport Qubit A-> C"
+          onPress={() => {
+            const {state: newState, aMeasurement, bMeasurement} = teleport({...state})
+            setState(newState)
+            setResult({a: aMeasurement, b: bMeasurement})
           }}
         />
         <View style={{height:100}}>
