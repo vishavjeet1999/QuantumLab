@@ -84,6 +84,8 @@ export const hadamard = (qubit) => {
     qubit.alpha = newAlpha
 
     qubit.beta = newBeta
+
+    return qubit
 }
 
 export const paulix = (qubit) => {

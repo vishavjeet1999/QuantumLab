@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, Button } from 'react-native';
+import { View, Text, Button, ScrollView } from 'react-native';
 import {
   qubit,
   // rotate,
-  // measure,
+  measure,
   // magnitudeSquared,
   getBolchAngle,
   twoQubit,
@@ -49,10 +49,10 @@ const QubitVisualizer = ({ theta, phi }) => {
           }}
         />
       </View>
-      {/* <View>
+      <View>
         <Text>x: {x}</Text>
         <Text>y: {y}</Text>
-      </View> */}
+      </View>
     </>
   )
 }
@@ -95,13 +95,22 @@ function App() {
   let { theta, phi } = getBolchAngle(currentQubit)
 
   return (
-    <View style={{ padding: 50 }}>
+    <View style={{flex:1}}>
+    <ScrollView style={{ padding: 50, flex:1 }}>
 
-      {/* <View style={{ marginVertical: 10 }}>
-        <Text style={{ fontSize: 16, marginBottom: 8 }}>Quantum State:</Text>
+      <View style={{ marginVertical: 10 }}>
+        <Text style={{ fontSize: 16, marginBottom: 8 }}>Test:</Text>
+        <Text>a00 = {state.a00.re.toFixed(2)} + {state.a00.im.toFixed(2)}i</Text>
+        <Text>a01 = {state.a01.re.toFixed(2)} + {state.a01.im.toFixed(2)}i</Text>
+        <Text>a10 = {state.a10.re.toFixed(2)} + {state.a10.im.toFixed(2)}i</Text>
+        <Text>a11 = {state.a11.re.toFixed(2)} + {state.a11.im.toFixed(2)}i</Text>
+      </View>
+
+      <View style={{ marginVertical: 10 }}>
+        <Text style={{ fontSize: 16, marginBottom: 8 }}>old</Text>
         <Text>α = {currentQubit.alpha.re.toFixed(2)} + {currentQubit.alpha.im.toFixed(2)}i</Text>
         <Text>β = {currentQubit.beta.re.toFixed(2)} + {currentQubit.beta.im.toFixed(2)}i</Text>
-      </View> */}
+      </View>
 
       <View style={{ marginVertical: 10 }}>
         <Text>theta = {theta.toFixed(2)}</Text>
@@ -167,21 +176,29 @@ function App() {
             setCurrentQubit(newQubit);
           }}
         />
-        {/* <Button
+        <Button
           title="Measure Qubit"
           onPress={() => {
             const outcome = measure(currentQubit);
             setResult(outcome);
           }}
-        /> */}
+        />
         <Button
           title="Hadamard (First Qubit)"
           onPress={() => {
-            const newState = { ...state };
-            hadamard({
+            let newState = { ...state };
+            let res = hadamard({
               alpha: newState.a00,
               beta: newState.a10
             });
+
+            newState = {
+              ...newState,
+              a00: res.alpha,
+              a10: res.beta
+            }
+            // this is modified
+
             setState(newState);
           }}
         />
@@ -209,7 +226,11 @@ function App() {
             })
           }}
         />
+        <View style={{height:100}}>
+
+        </View>
       </View>
+    </ScrollView>
     </View>
   );
 }
