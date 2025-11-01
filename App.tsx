@@ -13,7 +13,8 @@ import {
   pauliz,
   cnot,
   measureFirst,
-  measureSecond
+  measureSecond,
+  getSingleQubitAnglesFromTwo
 } from './src/qubit';
 
 const QubitVisualizer = ({ theta, phi }) => {
@@ -53,6 +54,17 @@ const QubitVisualizer = ({ theta, phi }) => {
         <Text>y: {y}</Text>
       </View> */}
     </>
+  )
+}
+
+const TwoQubitVisualizer = ({state})=> {
+  const qubit0Angles = getSingleQubitAnglesFromTwo(state, 0)
+  const qubit1Angles = getSingleQubitAnglesFromTwo(state, 1)
+  return (
+    <View style={{flexDirection:"row", justifyContent:"space-around", marginTop:20}}>
+      <QubitVisualizer theta={qubit0Angles.theta} phi={qubit0Angles.phi} />
+      <QubitVisualizer theta={qubit1Angles.theta} phi={qubit1Angles.phi} />
+    </View>
   )
 }
 
@@ -115,7 +127,8 @@ function App() {
       <View style={{ marginVertical: 20 }}>
 
 
-        <QubitVisualizer theta={theta} phi={phi} />
+        {/* <QubitVisualizer theta={theta} phi={phi} /> */}
+        <TwoQubitVisualizer state={state} />
 
         {/* <Button title="Rotate 0°" onPress={() => applyRotation(0)} /> */}
         {/* <Button title="Rotate 45°" onPress={() => applyRotation(45)} /> */}

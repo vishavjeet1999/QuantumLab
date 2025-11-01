@@ -213,7 +213,7 @@ export const measureFirst = (state) => {
         state.a01 = multiplyComplexByScalar(state.a01, 1 / norm)
         state.a10 = complex(0, 0)
         state.a11 = complex(0, 0)
-    }else {
+    } else {
         result = 1
 
         const norm = Math.sqrt(magnitudeSquared(state.a10) + magnitudeSquared(state.a11))
@@ -223,7 +223,7 @@ export const measureFirst = (state) => {
         state.a10 = multiplyComplexByScalar(state.a10, 1 / norm)
         state.a11 = multiplyComplexByScalar(state.a11, 1 / norm)
     }
-    
+
     return result
 }
 
@@ -243,7 +243,7 @@ export const measureSecond = (state) => {
         state.a01 = complex(0, 0)
         state.a10 = multiplyComplexByScalar(state.a10, 1 / norm)
         state.a11 = complex(0, 0)
-    }else {
+    } else {
         result = 1
 
         const norm = Math.sqrt(magnitudeSquared(state.a01) + magnitudeSquared(state.a11))
@@ -253,6 +253,37 @@ export const measureSecond = (state) => {
         state.a10 = complex(0, 0)
         state.a11 = multiplyComplexByScalar(state.a11, 1 / norm)
     }
-    
+
     return result
 }
+
+export const getSingleQubitAnglesFromTwo = (state, qubitIndex) => {
+    let alpha, beta
+
+    if (qubitIndex === 0) {
+        alpha = {
+            re: Math.sqrt(magnitudeSquared(state.a00) + magnitudeSquared(state.a01)),
+            im: 0
+        }
+        beta = {
+            re: Math.sqrt(magnitudeSquared(state.a10) + magnitudeSquared(state.a11)),
+            im: 0
+        }
+    } else {
+        alpha = {
+            re: Math.sqrt(magnitudeSquared(state.a00) + magnitudeSquared(state.a10)),
+            im: 0
+        }
+        beta = {
+            re: Math.sqrt(magnitudeSquared(state.a01) + magnitudeSquared(state.a11)),
+            im: 0
+        }
+    }
+
+    const theta = 2 * Math.acos(alpha.re)
+
+    const phi = Math.atan2(beta.im, beta.re)
+
+    return { theta, phi }
+}
+
