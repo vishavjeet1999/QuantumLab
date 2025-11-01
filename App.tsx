@@ -14,7 +14,8 @@ import {
   cnot,
   measureFirst,
   measureSecond,
-  getSingleQubitAnglesFromTwo
+  getSingleQubitAnglesFromTwo,
+  runSequence
 } from './src/qubit';
 
 const QubitVisualizer = ({ theta, phi }) => {
@@ -24,7 +25,7 @@ const QubitVisualizer = ({ theta, phi }) => {
   let y = radius * Math.sin(theta) * Math.sin(phi)
 
   return (
-    <>
+    <View style={{flexDirection:"column", justifyContent:"center", alignItems:"center"}}>
       <View
         style={{
           width: radius * 2,
@@ -53,7 +54,7 @@ const QubitVisualizer = ({ theta, phi }) => {
         <Text>x: {x}</Text>
         <Text>y: {y}</Text>
       </View>
-    </>
+    </View>
   )
 }
 
@@ -72,6 +73,8 @@ function App() {
   const [currentQubit, setCurrentQubit] = useState({ ...qubit });
   // const [angle, setAngle] = useState(0);
   // const [result, setResult] = useState(null);
+
+  const [sequence, setSequence] = useState([])
 
   const [state, setState] = useState({ ...twoQubit })
   const [result, setResult] = useState({
@@ -94,28 +97,35 @@ function App() {
 
   let { theta, phi } = getBolchAngle(currentQubit)
 
+  
+
   return (
     <View style={{flex:1}}>
     <ScrollView style={{ padding: 50, flex:1 }}>
 
-      <View style={{ marginVertical: 10 }}>
+      {/* <View style={{ marginVertical: 10 }}>
         <Text style={{ fontSize: 16, marginBottom: 8 }}>Test:</Text>
         <Text>a00 = {state.a00.re.toFixed(2)} + {state.a00.im.toFixed(2)}i</Text>
         <Text>a01 = {state.a01.re.toFixed(2)} + {state.a01.im.toFixed(2)}i</Text>
         <Text>a10 = {state.a10.re.toFixed(2)} + {state.a10.im.toFixed(2)}i</Text>
         <Text>a11 = {state.a11.re.toFixed(2)} + {state.a11.im.toFixed(2)}i</Text>
-      </View>
+      </View> */}
 
-      <View style={{ marginVertical: 10 }}>
+      {/* <View style={{ marginVertical: 10 }}>
         <Text style={{ fontSize: 16, marginBottom: 8 }}>old</Text>
         <Text>α = {currentQubit.alpha.re.toFixed(2)} + {currentQubit.alpha.im.toFixed(2)}i</Text>
         <Text>β = {currentQubit.beta.re.toFixed(2)} + {currentQubit.beta.im.toFixed(2)}i</Text>
-      </View>
+      </View> */}
 
       <View style={{ marginVertical: 10 }}>
+        <Text style={{ fontSize: 16, marginBottom: 8 }}>sequence</Text>
+        <Text>{sequence?.map(s=>s.type).join(",")}</Text>
+      </View>
+
+      {/* <View style={{ marginVertical: 10 }}>
         <Text>theta = {theta.toFixed(2)}</Text>
         <Text>phi = {phi.toFixed(2)}</Text>
-      </View>
+      </View> */}
 
       {/* <View style={{ marginVertical: 10 }}>
         <Text>Probability |0⟩ (Heads): {p0.toFixed(2)}</Text>
@@ -127,11 +137,11 @@ function App() {
         <Text>Measurement Result: {result !== null ? result : '-'}</Text>
       </View> */}
 
-      <View style={{ marginVertical: 10 }}>
+      {/* <View style={{ marginVertical: 10 }}>
         <Text>Two-Qubit Simulator</Text>
         <Text>First Qubit Measurement: {result.first !== null ? result.first : "-"}</Text>
         <Text>Second Qubit Measurement: {result.second !== null ? result.second : "-"}</Text>
-      </View>
+      </View> */}
 
       <View style={{ marginVertical: 20 }}>
 
@@ -144,46 +154,46 @@ function App() {
         {/* <Button title="Rotate 90°" onPress={() => applyRotation(10)} /> */}
         {/* <Button title="Rotate +10°" onPress={() => applyRotation(angle + 10)} /> */}
         {/* <Button title="Rotate -10°" onPress={() => applyRotation(angle - 10)} /> */}
-        <Button
+        {/* <Button
           title="Hadamard Gate"
           onPress={() => {
             const newQubit = { ...currentQubit };
             hadamard(newQubit);
             setCurrentQubit(newQubit);
           }}
-        />
-        <Button
+        /> */}
+        {/* <Button
           title="Apply Pauli-X (NOT)"
           onPress={() => {
             const newQubit = { ...currentQubit };
             paulix(newQubit);
             setCurrentQubit(newQubit);
           }}
-        />
-        <Button
+        /> */}
+        {/* <Button
           title="Apply Pauli-Y"
           onPress={() => {
             const newQubit = { ...currentQubit };
             pauliy(newQubit);
             setCurrentQubit(newQubit);
           }}
-        />
-        <Button
+        /> */}
+        {/* <Button
           title="Apply Pauli-Z (Phase Flip)"
           onPress={() => {
             const newQubit = { ...currentQubit };
             pauliz(newQubit);
             setCurrentQubit(newQubit);
           }}
-        />
-        <Button
+        /> */}
+        {/* <Button
           title="Measure Qubit"
           onPress={() => {
             const outcome = measure(currentQubit);
             setResult(outcome);
           }}
-        />
-        <Button
+        /> */}
+        {/* <Button
           title="Hadamard (First Qubit)"
           onPress={() => {
             let newState = { ...state };
@@ -201,8 +211,8 @@ function App() {
 
             setState(newState);
           }}
-        />
-        <Button
+        /> */}
+        {/* <Button
           title="CNOT"
           onPress={() => {
             const newState = { ...state };
@@ -224,6 +234,31 @@ function App() {
               first,
               second
             })
+          }}
+        /> */}
+
+        <Button
+          title="Add Hadamard to Q0"
+          onPress={() => {
+            setSequence([...sequence, {type: "H", target:0}])
+          }}
+        />
+        <Button
+          title="Add CNOT Q0->Q1"
+          onPress={() => {
+            setSequence([...sequence, {type: "CNOT", control: 0, target:1}])
+          }}
+        />
+         <Button
+          title="Run Sequence"
+          onPress={() => {
+            setState(runSequence(state, sequence))
+          }}
+        />
+         <Button
+          title="Clear Sequence"
+          onPress={() => {
+            setSequence([])
           }}
         />
         <View style={{height:100}}>

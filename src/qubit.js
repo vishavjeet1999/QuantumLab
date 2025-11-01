@@ -289,3 +289,53 @@ export const getSingleQubitAnglesFromTwo = (state, qubitIndex) => {
     return { theta, phi }
 }
 
+export const runSequence = (state, sequence) => {
+    let newState = { ...state }
+
+    sequence.forEach(step => {
+        switch (step.type) {
+            case "H":
+                if (step.target === 0) {
+                    let res = hadamard({ alpha: newState.a00, beta: newState.a10 })
+                    newState = {
+                        ...newState,
+                        a00: res.alpha,
+                        a10: res.beta
+                    }
+                }
+                else {
+                    let res = hadamard({ alpha: newState.a01, beta: newState.a11 })
+                    newState = {
+                        ...newState,
+                        a00: res.alpha,
+                        a10: res.beta
+                    }
+                }
+                break;
+            case "X":
+                if (step.target === 0) {
+                    let res = paulix({ alpha: newState.a00, beta: newState.a10 })
+                    newState = {
+                        ...newState,
+                        a00: res.alpha,
+                        a10: res.beta
+                    }
+                }
+                else {
+                    let res = paulix({ alpha: newState.a01, beta: newState.a11 })
+                    newState = {
+                        ...newState,
+                        a00: res.alpha,
+                        a10: res.beta
+                    }
+                }
+                break;
+            case "CNOT":
+                cnot(newState)
+                break;
+        }
+    })
+
+    return newState
+}
+
