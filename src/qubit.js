@@ -139,3 +139,120 @@ export const getBolchAngle = (qubit) => {
 
     return { theta, phi }
 }
+
+export const twoQubit = {
+    a00: complex(1, 0),
+    a01: complex(0, 0),
+    a10: complex(0, 0),
+    a11: complex(0, 0)
+}
+
+export const normalizeTwoQubit = (state) => {
+    const mg = Math.sqrt(
+        magnitudeSquared(state.a00),
+        magnitudeSquared(state.a01),
+        magnitudeSquared(state.a10),
+        magnitudeSquared(state.a11)
+    )
+
+    state.a00 = {
+        re: state.a00.re / mag,
+        im: state.a00.im / mag
+    }
+
+    state.a01 = {
+        re: state.a01.re / mag,
+        im: state.a01.im / mag
+    }
+
+    state.a10 = {
+        re: state.a10.re / mag,
+        im: state.a10.im / mag
+    }
+
+    state.a11 = {
+        re: state.a11.re / mag,
+        im: state.a11.im / mag
+    }
+}
+
+export const cnot = (state) => {
+    const newstate = {
+        a00: { ...state.a00 },
+        a01: { ...state.a01 },
+        a10: { ...state.a10 },
+        a11: { ...state.a11 }
+    }
+
+    newstate.a10 = { ...state.a11 }
+    newstate.a11 = { ...state.a10 }
+
+    newstate.a00 = { ...state.a00 }
+    newstate.a01 = { ...state.a01 }
+
+    state.a00 = newstate.a00
+    state.a01 = newstate.a01
+    state.a10 = newstate.a10
+    state.a11 = newstate.a11
+
+}
+
+export const measureFirst = (state) => {
+    const p0 = magnitudeSquared(state.a00) + magnitudeSquared(state.a01)
+
+    const random = Math.random()
+
+    let result
+
+    if (random < p0) {
+        result = 0
+
+        const norm = Math.sqrt(magnitudeSquared(state.a00) + magnitudeSquared(state.a01))
+
+        state.a00 = multiplyComplexByScalar(state.a00, 1 / norm)
+        state.a01 = multiplyComplexByScalar(state.a01, 1 / norm)
+        state.a10 = complex(0, 0)
+        state.a11 = complex(0, 0)
+    }else {
+        result = 1
+
+        const norm = Math.sqrt(magnitudeSquared(state.a10) + magnitudeSquared(state.a11))
+
+        state.a00 = complex(0, 0)
+        state.a01 = complex(0, 0)
+        state.a10 = multiplyComplexByScalar(state.a10, 1 / norm)
+        state.a11 = multiplyComplexByScalar(state.a11, 1 / norm)
+    }
+    
+    return result
+}
+
+export const measureSecond = (state) => {
+    const p0 = magnitudeSquared(state.a00) + magnitudeSquared(state.a10)
+
+    const random = Math.random()
+
+    let result
+
+    if (random < p0) {
+        result = 0
+
+        const norm = Math.sqrt(magnitudeSquared(state.a00) + magnitudeSquared(state.a10))
+
+        state.a00 = multiplyComplexByScalar(state.a00, 1 / norm)
+        state.a01 = complex(0, 0)
+        state.a10 = multiplyComplexByScalar(state.a10, 1 / norm)
+        state.a11 = complex(0, 0)
+    }else {
+        result = 1
+
+        const norm = Math.sqrt(magnitudeSquared(state.a01) + magnitudeSquared(state.a11))
+
+        state.a00 = complex(0, 0)
+        state.a01 = multiplyComplexByScalar(state.a01, 1 / norm)
+        state.a10 = complex(0, 0)
+        state.a11 = multiplyComplexByScalar(state.a11, 1 / norm)
+    }
+    
+    return result
+}
