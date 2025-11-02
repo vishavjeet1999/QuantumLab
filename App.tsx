@@ -6,9 +6,9 @@ import Teleportation from "./teleportation"
 function App() {
 
   // return <SingleQubit />
-  // return <TwoQubit />
+  return <TwoQubit />
   // return <Sequence />
-  return <Teleportation />
+  // return <Teleportation />
 }
 
 export default App;
