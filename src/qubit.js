@@ -388,40 +388,40 @@ export const runSequence = (state, sequence) => {
             case "H":
                 if (step.target === 0) {
                     let res = hadamard({ alpha: newState.a00, beta: newState.a10 })
-                    // newState = {
-                    //     ...newState,
-                    //     a00: res.alpha,
-                    //     a10: res.beta
-                    // }
+                    newState = {
+                        ...newState,
+                        a00: res.alpha,
+                        a10: res.beta
+                    }
                     // this is modified
                 }
                 else {
                     let res = hadamard({ alpha: newState.a01, beta: newState.a11 })
-                    // newState = {
-                    //     ...newState,
-                    //     a00: res.alpha,
-                    //     a10: res.beta
-                    // }
+                    newState = {
+                        ...newState,
+                        a01: res.alpha,
+                        a11: res.beta
+                    }
                     // this is modified
                 }
                 break;
             case "X":
                 if (step.target === 0) {
                     let res = paulix({ alpha: newState.a00, beta: newState.a10 })
-                    // newState = {
-                    //     ...newState,
-                    //     a00: res.alpha,
-                    //     a10: res.beta
-                    // }
+                    newState = {
+                        ...newState,
+                        a00: res.alpha,
+                        a10: res.beta
+                    }
                     // this is modified
                 }
                 else {
                     let res = paulix({ alpha: newState.a01, beta: newState.a11 })
-                    // newState = {
-                    //     ...newState,
-                    //     a00: res.alpha,
-                    //     a10: res.beta
-                    // }
+                    newState = {
+                        ...newState,
+                        a01: res.alpha,
+                        a11: res.beta
+                    }
                     // this is modified
                 }
                 break;
